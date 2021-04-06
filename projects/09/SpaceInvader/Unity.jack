@@ -1,0 +1,129 @@
+class Unity {
+    field Player player; 
+    field List aliens;
+
+   constructor Unity new() {
+        let player = Player.new();
+        do generateAlien();
+        
+        return this;
+   }
+
+   method void dispose() {
+    do player.dispose();
+    do aliens.dispose();
+    do Memory.deAlloc(this); 
+    return;
+   }
+
+   method void  generateAlien(){
+        var Alien alien;
+        var int i;
+        var int k;
+        let i =4;
+        let k =29;
+        while(i>-1){
+            while(k>-1){
+                 let alien = Alien.new(k,i);
+                let aliens = List.new(alien,aliens);
+                let k = k-1;
+            }
+            let i = i-1;
+            let k =29;
+        }
+
+       return;
+   }
+   method void  moveAliens(){
+       var Alien alien;
+
+        var List current;   
+        let current = aliens;  
+        while (~(current = null)) {    
+            let alien = current.getData();
+            do alien.moveRight();
+            let current = current.getNext();         
+        }
+       return;
+   }
+
+   method void  checkMove(){
+
+        var List alienLast; 
+        var int bulletX;
+        var int bulletY;
+        var int alienX;
+        var int alienY;
+        var Alien alien;
+        var List current;   
+        let current = aliens; 
+        let alienLast = null;
+        let bulletY = player.getBulletY();
+        let bulletX = player.getBulletX();
+        
+        while (~(current = null)) {
+            let alien = current.getData();
+
+            let alienY = alien.getAlienY();
+            let alienX = alien.getAlienX();
+            if(alienX = bulletX){
+  
+                if(alienY = bulletY){
+                           
+                    do player.bulletErase();
+                    do alien.clear();
+                    if(alienLast = null){
+
+                        let alienLast = current;
+                        let current = current.getNext();
+                        do alienLast.disposeThis();   
+                    }else{
+                        do alienLast.deleteNext();
+                        do current.disposeThis();          
+                        let current = alienLast;
+                    }
+                }
+             } 
+                let alienLast = current;
+                let current = current.getNext();   
+                      
+        }
+
+       return;
+   }
+
+
+   method void run() {
+       var char key;  
+      var boolean exit;
+      let exit = false;
+      
+        
+
+        while (~exit) {
+
+            while (key = 0) {
+               
+                do player.moveBullet();
+                do checkMove();
+                do Sys.wait(20);
+                let key = Keyboard.keyPressed();
+
+            }
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 130) { do player.moveLeft(); }   // left arrow
+            if (key = 132) {   do player.moveRight(); }   // right arrow
+            if (key = 32) {   do player.shoot();  } // space - shoot arrow
+
+
+            while (~(key = 0)) {
+                do player.moveBullet();
+              //  do checkMove();
+                do Sys.wait(20);
+                let key = Keyboard.keyPressed();
+            
+            }
+        } 
+        return;
+   }
+}

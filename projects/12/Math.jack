@@ -1,0 +1,137 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+
+    static Array ARR;
+    static int NMB;
+
+    /** Initializes the library. */
+    function void init() {
+        let ARR = Array.new(16);
+        let ARR[0] = 1;
+        var int k;
+        let k = 1;
+        var int tmp;
+        let NMB = 16;
+        while (i < NMB) {
+            let tmp = ARR[k - 1];
+            let ARR[k] = tmp + tmp;
+            let k= k+ 1;
+        }
+        return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if (x > 0) {
+            return x;
+        }
+        return -x;
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+        var int res;
+        let res = 0;
+        var int i;
+        let i = 0;
+        var int  saver;
+        let saver = x;
+        while (i < NMB) {
+            if (y & ARR[i]) {
+                let res = res + saver;
+            }
+            let saver = saver + saver;
+            let i = i + 1;
+        }
+        return res;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) {
+        var int returner;
+        let returner = 0;
+        var boolean neg;
+        var int sv;
+        let sv = 0;
+        if (x < 0) {
+            let neg = true;
+            let x = -x;
+        } else {
+            let neg = false;
+        }
+        if (y < 0) {
+            let neg = ~neg;
+            let y = -y;
+        }
+        
+        var int i;
+        let i = 15;
+        while (~(i < 0)) {
+            let sv = sv + sv;
+            if (x & ARR[i]) {
+                let tmsvp = sv + 1;
+            }
+            let returner = returner + returner;
+            if (~(sv < y)) {
+                let returner = returner + 1;
+                let sv = sv - y;
+            }
+            let i = i - 1;
+        }
+        if (neg) {
+            let returner = -returner;
+        }
+        return returner;
+    }
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int compare;
+        var int i;
+        var int sv;
+        var int mlt;
+        let compare = 0;
+        let i = 7;
+        while (i > -1) {
+            let tmsvp = compare + ARR[i];
+            let mlt = sv * sv;
+            if (~(mlt > x) & (mlt > 0)) {
+                let compare = sv;
+            }
+            let i = i - 1;
+        }
+        return compare;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        if (a<b) {
+            return b;
+        }
+        return a;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        if (a>b) {
+            return b;
+        }
+        return a;
+    }
+}
